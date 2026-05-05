@@ -47,7 +47,6 @@ class Database:
     # ============================
     # Участники семьи
     # ============================
-
     async def add_member(self, user_id: int, family_id: int, role: str):
         query = """
         INSERT INTO family_members (user_id, family_id, role)
@@ -56,6 +55,13 @@ class Database:
         """
         async with self.pool.acquire() as conn:
             return await conn.fetchval(query, user_id, family_id, role)
+
+    async def check_membership_by_user_id(self, user_id: int):
+        query = """
+        SELECT * FROM family_members WHERE user_id = $1;
+        """
+        async with self.pool.acquire() as conn:
+            return await conn.fetchrow(query, user_id)
 
     async def get_family_members(self, family_id: int):
         query = """
@@ -66,6 +72,13 @@ class Database:
         """
         async with self.pool.acquire() as conn:
             return await conn.fetch(query, family_id)
+
+    async def delete_member(self, user_id: int):
+        query = """
+        DELETE FROM family_members WHERE user_id = $1;
+        """
+        async with self.pool.acquire() as conn:
+            return await conn.fetchval(query, user_id)
 
     # ============================
     # Задачи
@@ -89,5 +102,34 @@ class Database:
         query = "SELECT * FROM tasks WHERE family_id = $1;"
         async with self.pool.acquire() as conn:
             return await conn.fetch(query, family_id)
+
+    async def get_family_task_ids(self, family_id: int):
+        query = "SELECT id FROM tasks WHERE family_id = $1;"
+        async with self.pool.acquire() as conn:
+            records = await conn.fetch(query, family_id)
+            return [record['id'] for record in records]
+
+    async def get_user_task_ids(self, user_id: int):
+        query = "SELECT id FROM tasks WHERE user_id = $1;"
+        async with self.pool.acquire() as conn:
+            records = await conn.fetch(query, user_id)
+            return [record['id'] for record in records]
+
+    async def get_task_by_title(self, title: str):
+        query = "SELECT * FROM tasks WHERE title = $1;"
+        async with self.pool.acquire() as conn:
+            return await conn.fetchrow(query, title)
+
+    async def get_task_by_id(self, task_id: int):
+        query = "SELECT * FROM tasks WHERE id = $1;"
+        async with self.pool.acquire() as conn:
+            return await conn.fetchrow(query, task_id)
+
+    async def delete_task(self, task_id: int):
+        query = """
+        DELETE FROM tasks WHERE id = $1;
+        """
+        async with self.pool.acquire() as conn:
+            await conn.execute(query, task_id)
 
 db = Database(DB_DSN)
