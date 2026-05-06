@@ -66,6 +66,20 @@ class Database:
         """
         async with self.pool.acquire() as conn:
             return await conn.fetch(query, family_id)
+        
+    async def check_membership_by_user_id(self, user_id: int): # Проверка, в какой семье состоит пользователь
+        query = """
+        SELECT * FROM family_members WHERE user_id = $1;
+        """
+        async with self.pool.acquire() as conn:
+            return await conn.fetchrow(query, user_id)
+        
+    async def delete_member(self, user_id: int): # Выход из семьи
+        query = """
+        DELETE FROM family_members WHERE user_id = $1;
+        """
+        async with self.pool.acquire() as conn:
+            await conn.execute(query, user_id)
 
     # ============================
     # Задачи
@@ -89,5 +103,38 @@ class Database:
         query = "SELECT * FROM tasks WHERE family_id = $1;"
         async with self.pool.acquire() as conn:
             return await conn.fetch(query, family_id)
+        
+    async def get_family_task_ids(self, family_id: int): # Получить ID всех задач семьи
+        query = "SELECT id FROM tasks WHERE family_id = $1;"
+        async with self.pool.acquire() as conn:
+            records = await conn.fetch(query, family_id)
+            return [record['id'] for record in records]
+
+    async def get_user_task_ids(self, user_id: int): # Получить ID задач пользователя
+        query = "SELECT id FROM tasks WHERE assigned_to = $1;"  
+        async with self.pool.acquire() as conn:
+            records = await conn.fetch(query, user_id)
+            return [record['id'] for record in records]
+    
+    async def get_task_by_title(self, title: str): # Найти задачу по названию
+        query = "SELECT * FROM tasks WHERE title = $1;"
+        async with self.pool.acquire() as conn:
+            return await conn.fetchrow(query, title)
+
+    async def get_task_by_id(self, task_id: int): # Получить полную инфо о задаче
+        query = "SELECT * FROM tasks WHERE id = $1;"
+        async with self.pool.acquire() as conn:
+            return await conn.fetchrow(query, task_id)
+
+    async def delete_task(self, task_id: int): # Удалить задачу
+        query = """
+        DELETE FROM tasks WHERE id = $1;
+        """
+        async with self.pool.acquire() as conn:
+            await conn.execute(query, task_id)
+
+
+    async def get_family_by_invite_code(self, invite_code: str):
+        return await self.get_family_by_code(invite_code)
 
 db = Database(DB_DSN)
