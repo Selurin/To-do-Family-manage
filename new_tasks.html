@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Новая задача</title>
+  <link rel="stylesheet" href="newdn.css">
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+</head>
+<body>
+  <div class="container">
+    
+    <header class="header">
+      <div class="logo">
+        <img src="img/vk_circled.svg" alt="вк">
+        <div class="title">СЕМЕЙНЫЙ МЕНЕДЖЕР</div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="new-task-modal">
+        <div class="new-task-header">
+          <h1 class="new-task-title">НОВАЯ ЗАДАЧА</h1>
+          <button type="button" class="modal-close" onclick="location.href='tasks.html'">✕</button>
+        </div>
+
+        <form class="task-form" onsubmit="return false;">
+          <div class="form-group-box">
+            <label class="label-box">Текст задачи:</label>
+            <textarea class="textarea-box" placeholder="Введите задачу"></textarea>
+          </div>
+
+          <div class="form-group-box">
+            <label class="label-box">Исполнитель:</label>
+            <div class="custom-select">
+              <button type="button" class="select-box" onclick="toggleSelectOptions(event)">
+                <img src="img/person.svg" alt="" class="select-icon">
+                <span id="selected-value">Я</span>
+                <span class="select-arrow">▼</span>
+              </button>
+              <div class="select-options" id="selectOptions" style="display: none;">
+                <div class="select-option" onclick="selectOption('Я')">
+                  <img src="img/person.svg" alt="" class="select-icon-small">
+                  Я
+                </div>
+                <div class="select-option" onclick="selectOption('Мама')">
+                  <img src="img/person.svg" alt="" class="select-icon-small">
+                  Мама
+                </div>
+                <div class="select-option" onclick="selectOption('Папа')">
+                  <img src="img/person.svg" alt="" class="select-icon-small">
+                  Папа
+                </div>
+                <div class="select-option" onclick="selectOption('Брат')">
+                  <img src="img/person.svg" alt="" class="select-icon-small">
+                  Брат
+                </div>
+                <div class="select-option" onclick="selectOption('Сестра')">
+                  <img src="img/person.svg" alt="" class="select-icon-small">
+                  Сестра
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group-box">
+            <label class="label-box">Срок:</label>
+            <input type="date" class="input-box" placeholder="XX.XX.XXXX">
+          </div>
+
+          <button type="button" class="create-task-btn" onclick="location.href='tasks.html'">Создать</button>
+        </form>
+      </div>
+    </main>
+
+  </div>
+
+  <script>
+    function toggleSelectOptions(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      const options = document.getElementById('selectOptions');
+      options.style.display = options.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function selectOption(value) {
+      document.getElementById('selected-value').textContent = value;
+      document.getElementById('selectOptions').style.display = 'none';
+    }
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.custom-select')) {
+        document.getElementById('selectOptions').style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
