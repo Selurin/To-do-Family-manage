@@ -1,84 +1,68 @@
-from fastapi import APIRouter, HTTPException
-from starlette import status
-
-from ..database import db
-from datetime import datetime, timedelta
-from collections import defaultdict
+from fastapi import APIRouter
+from ..database import db 
 
 router = APIRouter(prefix="/task", tags=["task"])
 
-#добавление заданий
+#Создание задачи: теперь берём ID сразу из create_task, без поиска по названию
 @router.post("/add_task")
 async def add_task(from_id: int, to_id: int, title: str, description: str):
-    #используем семью автрора
     from_user = await db.check_membership_by_user_id(from_id)
+    if not from_user:
+        return {"status": "ERR: user not in family"}
+
     family_id = from_user['family_id']
 
-    #проверяем длину
     if len(title) > 100:
-        return {
-            "status": "ERR: title too long",
-        }
+        return {"status": "ERR: title too long"}
     if len(description) > 1000:
-        return {
-            "status": "ERR: description too long",
-        }
+        return {"status": "ERR: description too long"}
 
-    #создаём задание
-    await db.create_task(family_id, from_id, title, description)
-    task = await db.get_task_by_title(title)
-    #предписываем задание
-    await db.assign_task(task['id'], to_id)
+    # create_task уже возвращает ID новой задачи (RETURNING id)
+    new_task_id = await db.create_task(family_id, from_id, title, description)
+
+    # Назначаем исполнителя, если он выбран (0 или пусто = не назначено)
+    if to_id and to_id != 0:
+        await db.assign_task(new_task_id, to_id)
+
     return {
-        "status": "task assigned",
-        "task_id": task['id'],
-        "family_id": family_id,
-        "creator_id": from_user['user_id'],
-        "assigned_to_id": to_id,
+        "status": "task_assigned",
+        "task_id": new_task_id,
+        "creator_id": from_id,
+        "assigned_to_id": to_id
     }
 
-#удаление задачи из бд
+#Удаление задачи
 @router.post("/delete_task")
 async def delete_task(task_id: int):
     await db.delete_task(task_id)
-    return {
-        "status": "task deleted",
-        "task_id": task_id,
-    }
+    return {"status": "task_deleted", "task_id": task_id}
 
-#получение всех задач семьи по пользователю
+#получение задач: ОДИН запрос возвращает массив готовых объектов с именами
 @router.get("/get_family_tasks")
 async def get_family_tasks(user_id: int):
     user = await db.check_membership_by_user_id(user_id)
+    if not user:
+        return {"status": "ERR: user not in family"}
+
     family_id = user['family_id']
-    task_ids = await db.get_family_task_ids(family_id)
-    return {
-        "family_id": family_id,
-        "task_ids": task_ids,
-        "count": len(task_ids),
-    }
+    
+    # Получаем все задачи семьи
+    tasks = await db.get_family_tasks(family_id)
+    # Получаем всех участников для ID -> Имя
+    members = await db.get_family_members(family_id)
+    
+    name_map = {m['user_id']: m['name'] for m in members}
 
-#получение всех задач пользователя
-@router.get("/get_user_tasks")
-async def get_user_tasks(user_id: int):
-    task_ids = await db.get_user_task_ids(user_id)
-    return {
-        "user_id": user_id,
-        "task_ids": task_ids,
-        "count": len(task_ids),
-    }
+    enriched_tasks = []
+    for t in tasks:
+        enriched_tasks.append({
+            "task_id": t['id'],
+            "title": t['title'],
+            "description": t['description'],
+            "status": t['status'],
+            "creator_name": name_map.get(t['creator_id'], 'Пользователь'),
+            "assignee_name": name_map.get(t['assigned_to'], 'Не назначено') if t['assigned_to'] else 'Не назначено',
+            "assigned_to_id": t['assigned_to']
+        })
 
-#получение задания по ид
-@router.get("/get_task_by_id")
-async def get_task_by_id(task_id: int):
-    task = await db.get_task_by_id(task_id)
-    return {
-        "task_id": task['id'],
-        "family_id": task['family_id'],
-        "creator_id": task['creator_id'],
-        "assigned_to_id": task['assigned_to'],
-        "title": task['title'],
-        "description": task['description'],
-        "status": task['status'],
-    }
-
+    return {"tasks": enriched_tasks}
