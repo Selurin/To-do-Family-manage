@@ -20,15 +20,13 @@
       <div class="card">
         <p class="card-title">Введите имя вашей семьи:</p>
 
-        <input type="text" id="familyName" class="input" placeholder="Введите имя вашей семьи">
-
-        <a href="created.html" class="action-btn next-btn">
-          <span class="chs-btn">Далее</span>
-          <img src="img/next_page.svg" alt="далее">
-        </a>
+        <input type="text" id="family-name-input" class="input" placeholder="Например: Ивановы" maxlength="45">
+        <button id="create-family-btn" class="action-btn next-btn" ><span class="chs-btn">Далее</span><img src="img/next_page.svg" alt="далее"></button>
+        <p id="create-error" style="color: white; margin-top: 15px; font-size: 14px; min-height: 20px;"></p>
       </div>
     </main>
 
   </div>
+  <script src="script/create.js"></script>
 </body>
 </html>

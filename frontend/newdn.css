@@ -11,7 +11,6 @@ body {
 
 /* КОНТЕЙНЕР */
 .container {
-  width: 100vw;
   min-height: 100vh;
   margin: 0;
   margin-left: calc(-50vw + 50%);
@@ -74,6 +73,10 @@ body {
   align-items: center;
   flex-grow: 1;
   padding: 40px 0;
+}
+
+a {
+    text-decoration: none;
 }
 
 .vk-button {
@@ -154,7 +157,7 @@ body {
 
 /* КНОПКА ДАЛЕЕ */
 .action-btn.next-btn {
-  justify-content: space-between;
+  /* justify-content: space-between; */
   padding-right: 15px;
 }
 
@@ -164,9 +167,9 @@ body {
   font-size:large;
 }
 
-.action-btn.next-btn img {
+/* .action-btn.next-btn img {
   margin-left: auto;
-}
+} */
 
 .icon {
   font-size: 18px;
@@ -248,7 +251,7 @@ body {
   padding: 20px;
   margin-bottom: 15px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 15px;
   border: 2px solid transparent;
   transition: 0.2s;
@@ -278,12 +281,18 @@ body {
   flex-grow: 1;
   text-align: left;
 }
+/* ОТЛАДКА
+* {
+    outline: 1px solid red !important;
+} 
+*/
 
 .task-title {
   font-size: 16px;
   color: #182846;
   font-weight: 500;
   margin-bottom: 5px;
+  word-break: break-word;
 }
 
 .task-assignee {
@@ -576,6 +585,19 @@ body {
   cursor: pointer;
 }
 
+.counter-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  font-family: Roboto, Arial;
+}
+
+#char-counter {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+}
+
 /* КНОПКА СОЗДАТЬ */
 .create-task-btn {
   background: #F24781;
@@ -732,6 +754,10 @@ body {
   text-align: center;
   word-break: break-word;
   line-height: 1.2;
+}
+
+ul,li {
+  list-style: none;
 }
 
 /* НАСТРОЙКИ */

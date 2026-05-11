@@ -12,9 +12,9 @@ async def add_task(from_id: int, to_id: int, title: str, description: str):
 
     family_id = from_user['family_id']
 
-    if len(title) > 100:
+    if len(title) > 255:
         return {"status": "ERR: title too long"}
-    if len(description) > 1000:
+    if len(description) > 255:
         return {"status": "ERR: description too long"}
 
     # create_task уже возвращает ID новой задачи (RETURNING id)

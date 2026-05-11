@@ -22,32 +22,16 @@
           <div class="profile-photo-placeholder">
             <img src="img/client_mgt.svg" alt="профиль">
           </div>
-          <p class="profile-name">Вы: Иван</p>
+          <p id="profile-user-name" class="profile-name">Загрузка...</p>
         </div>
 
         <div class="members-table">
           <p class="members-title">Участники семьи:</p>
           <div class="members-list">
-            <div class="member-row">
-              <div class="member-badge">Алексей</div>
-              <div class="member-badge">Папа</div>
-              <div class="member-badge">Родитель</div>
-            </div>
-            <div class="member-row">
-              <div class="member-badge">Мария</div>
-              <div class="member-badge">Мама</div>
-              <div class="member-badge">Родитель</div>
-            </div>
-            <div class="member-row">
-              <div class="member-badge">Андрей</div>
-              <div class="member-badge">Сын</div>
-              <div class="member-badge">Ребенок</div>
-            </div>
-            <div class="member-row">
-              <div class="member-badge">Юля</div>
-              <div class="member-badge">Дочь</div>
-              <div class="member-badge">Ребенок</div>
-            </div>
+            <ul id="members-list" class="members-list">
+              <!-- Сюда будут добавляться участники через JS -->
+              <li class="loading">Загрузка...</li>
+            </ul>
           </div>
         </div>
       </div>
@@ -60,5 +44,6 @@
     </footer>
 
   </div>
+  <script src="script/profile.js"></script>
 </body>
 </html>

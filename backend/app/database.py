@@ -136,5 +136,10 @@ class Database:
 
     async def get_family_by_invite_code(self, invite_code: str):
         return await self.get_family_by_code(invite_code)
+    
+    
+    async def close(self):
+        if self.pool:
+            await self.pool.close()
 
 db = Database(DB_DSN)

@@ -20,15 +20,18 @@
       <div class="card">
         <p class="card-title">Введите код приглашения:</p>
 
-        <input type="text" id="invitationCode" class="input" placeholder="Введите код приглашения">
+        <input type="text" id="invite-code-input" class="input" placeholder="Введите код приглашения">
 
-        <a href="joined.html" class="action-btn next-btn">
+        <p id="join-error" style="color: #ff6b6b; margin-top: 10px; font-size: 14px; min-height: 20px;"></p>
+
+        <button id="join-btn" class="action-btn next-btn">
           <span class="chs-btn">Далее</span>
           <img src="img/next_page.svg" alt="далее">
-        </a>
+        </button>
       </div>
     </main>
 
   </div>
+  <script src="script/join.js"></script>
 </body>
 </html>
