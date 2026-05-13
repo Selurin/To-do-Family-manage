@@ -25,22 +25,27 @@ longpoll = VkBotLongPoll(vk_session, GROUP_ID)
 # Множество для хранения ID уже отправленных задач
 sent_tasks = set()
 
-
 def check_new_tasks():
     """Проверяет новые задачи и отправляет уведомления"""
     global sent_tasks
-
     print("🔍 Проверка БД...")
 
     try:
         conn = psycopg2.connect(DB_DSN)
         cursor = conn.cursor()
 
-        # Получаем задачи с JOIN на таблицу users, чтобы сразу получить VK ID
+        # Получаем задачи с JOIN на users для назначенного и для создателя
         cursor.execute("""
-            SELECT t.id, t.title, t.description, t.creator_id, t.deadline, u.vk_id
+            SELECT 
+                t.id, 
+                t.title, 
+                t.description, 
+                t.deadline,
+                assigned_user.vk_id as assigned_vk_id,
+                creator_user.name as creator_name
             FROM tasks t
-            JOIN users u ON t.assigned_to = u.id
+            JOIN users assigned_user ON t.assigned_to = assigned_user.id
+            JOIN users creator_user ON t.creator_id = creator_user.id
             WHERE t.notification_sent = FALSE
             ORDER BY t.id ASC
         """)
@@ -52,31 +57,32 @@ def check_new_tasks():
             task_id = task[0]
             title = task[1]
             description = task[2]
-            creator_id = task[3]
-            deadline = task[4]
-            vk_user_id = task[5]  # ← это настоящий VK ID!
+            deadline = task[3]
+            vk_user_id = task[4]  # ← VK ID назначенного
+            creator_name = task[5]  # ← Имя создателя!
 
             # Пропускаем уже обработанные
             if task_id in sent_tasks:
                 continue
 
-            # Формируем сообщение
-            message = f"📋 **Новая задача!**\n\n"
-            message += f"**{title}**\n\n"
+            # Формируем сообщение (теперь с именем создателя)
+            message = f"📋 Новая задача!\n\n"
+            message += f"{title}\n\n"
             if description:
                 message += f"{description}\n\n"
             if deadline:
                 message += f"⏰ Дедлайн: {deadline.strftime('%d.%m.%Y %H:%M')}\n"
-            message += f"\n👤 Создатель: {creator_id}"
+            message += f"\n👤 Создатель: {creator_name}"  # ← теперь имя, а не ID
 
-            # Отправляем на реальный VK ID
+            # Отправляем уведомление
             try:
                 vk.messages.send(
-                    peer_id=vk_user_id,  # ← теперь правильный ID!
+                    peer_id=vk_user_id,
                     message=message,
                     random_id=0
                 )
-                print(f"✅ Уведомление отправлено пользователю {vk_user_id} о задаче #{task_id}: {title}")
+                print(
+                    f"✅ Уведомление отправлено пользователю {vk_user_id} о задаче #{task_id}: {title} (создатель: {creator_name})")
 
                 # Помечаем как отправленное
                 cursor.execute(
@@ -88,7 +94,7 @@ def check_new_tasks():
                 sent_tasks.add(task_id)
 
             except Exception as e:
-                print(f"❌ Ошибка отправки задачи #{task_id} на {vk_user_id}: {e}")
+                print(f"❌ Ошибка отправки задачи #{task_id}: {e}")
 
         cursor.close()
         conn.close()
@@ -143,7 +149,7 @@ def main():
             elif text == '/help':
                 vk.messages.send(
                     peer_id=user_id,
-                    message="🤖 **Доступные команды:**\n\n"
+                    message="🤖 Доступные команды:\n\n"
                             "/status - статус бота\n"
                             "/help - это сообщение\n\n"
                             "📌 Бот автоматически уведомляет о новых задачах",
