@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Семейный менеджер</title>
+    <link rel="stylesheet" href="newdn.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <div class="vk-icon">vk</div>
+                <h1 class="title">СЕМЕЙНЫЙ МЕНЕДЖЕР</h1>
+            </div>
+        </header>
+
+        <main class="main" style="flex-direction: column; gap: 30px;">
+            <!-- Основная кнопка (пока ведет сразу, позже тут будет VK Bridge) -->
+            <button onclick="alert('В разработке')" class="vk-button">ВОЙТИ ЧЕРЕЗ VK</button> <!-- Убрать заглушку alert позже -->
+            
+            <!-- Временная панель разработчика -->
+            <div style="width: 100%; max-width: 350px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; text-align: center;">
+                <h3 style="color: #F24781; margin-bottom: 15px; font-size: 16px;">Dev Mode: Ручной вход</h3>
+                
+                <form id="dev-form" style="display: flex; flex-direction: column; gap: 10px;">
+                    <input type="number" id="dev-password" class="input" placeholder="Пароль доступа" required>
+                    <input type="number" id="dev-vk-id" class="input" placeholder="VK ID (например, 123)" required>
+                    <input type="text" id="dev-name" class="input" placeholder="Имя пользователя" required>
+                    
+                    <button type="submit" id="dev-login-btn" class="vk-button" style="width: 100%; font-size: 16px; padding: 12px; margin-top: 10px;">
+                        Зарегистрировать и войти
+                    </button>
+                </form>
+                
+                <p id="dev-error" style="color: #ff6b6b; margin-top: 15px; font-size: 12px; min-height: 15px;"></p>
+            </div>
+        </main>
+    </div>
+
+    <script src="script/index.js"></script>
+</body>
+</html>

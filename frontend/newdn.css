@@ -1,0 +1,1117 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #182846;
+}
+
+/* КОНТЕЙНЕР */
+.container {
+  min-height: 100vh;
+  margin: 0;
+  margin-left: calc(-50vw + 50%);
+  background: #182846;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  justify-content: flex-start;
+  margin-left: -32px;
+  margin-right: -32px;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo img {
+  width: 36px;
+  height: 36px;
+}
+
+.vk-icon {
+  width: 36px;
+  height: 36px;
+  background: #F24781;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #182846;
+  font-weight: bold;
+  text-transform: lowercase;
+}
+
+.title {
+  color: #F24781;
+  font-family: Roboto, Arial;
+  font-style: normal;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+
+/* MAIN */
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  padding: 40px 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+.vk-button {
+  background: #F24781;
+  color: white;
+  border: none;
+  padding: 20px 40px;
+  font-family: Roboto, Arial;
+  font-size: 24px;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: 500;
+}
+
+.vk-button:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+/* CARD */
+.card {
+  background: #F24781;
+  padding: 40px;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.card-title {
+  font-family: Roboto, Arial;
+  color: white;
+  margin-bottom: 30px;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.card-subtitle {
+  color: white;
+  font-size: 14px;
+  margin-bottom: 20px;
+  opacity: 0.95;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
+  background: white;
+  border: none;
+  border-radius: 10px;
+  padding: 15px 20px;
+  padding-left: 15px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #182846;
+  font-size: 16px;
+  font-weight: 500;
+  transition: 0.2s;
+  width: 100%;
+  font-family: Roboto, Arial;
+}
+
+.action-btn:hover {
+  opacity: 0.85;
+  background: #f0f0f0;
+}
+
+.action-btn img {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+/* КНОПКА ДАЛЕЕ */
+.action-btn.next-btn {
+  /* justify-content: space-between; */
+  padding-right: 15px;
+}
+
+.action-btn.next-btn .chs-btn {
+  text-align: center;
+  flex-grow: 1;
+  font-size:large;
+}
+
+/* .action-btn.next-btn img {
+  margin-left: auto;
+} */
+
+.icon {
+  font-size: 18px;
+}
+
+/* INPUT */
+.input {
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  margin-bottom: 15px;
+  font-size: 14px;
+  font-family: Roboto, Arial;
+}
+
+.input::placeholder {
+  color: #ccc;
+}
+
+/* ТЕКСТОВОЕ ПОЛЕ */
+.textarea {
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  margin-bottom: 15px;
+  font-size: 14px;
+  font-family: Roboto, Arial;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.textarea::placeholder {
+  color: #ccc;
+}
+
+/* СЕЛЕКТ */
+.select {
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  border: 2px solid #F24781;
+  outline: none;
+  margin-bottom: 15px;
+  font-size: 14px;
+  font-family: Roboto, Arial;
+  background: white;
+  color: #182846;
+  cursor: pointer;
+}
+
+.select:focus {
+  background: #f9f9f9;
+}
+
+/* ЛЕЙБЛ */
+.label {
+  display: block;
+  color: #F24781;
+  font-size: 14px;
+  margin-bottom: 8px;
+  text-align: left;
+  font-weight: 500;
+}
+
+/* ФОРМА */
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+/* ЗАДАЧИ */
+.task-item {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  border: 2px solid transparent;
+  transition: 0.2s;
+}
+
+.task-item:hover {
+  border-color: #F24781;
+}
+
+.task-item.completed {
+  opacity: 0.6;
+}
+
+.task-item.completed .task-title {
+  text-decoration: line-through;
+}
+
+.task-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #F24781;
+  flex-shrink: 0;
+}
+
+.task-content {
+  flex-grow: 1;
+  text-align: left;
+}
+/* ОТЛАДКА
+* {
+    outline: 1px solid red !important;
+} 
+*/
+
+.task-title {
+  font-size: 16px;
+  color: #182846;
+  font-weight: 500;
+  margin-bottom: 5px;
+  word-break: break-word;
+}
+
+.task-assignee {
+  font-size: 12px;
+  color: #666;
+}
+
+.task-list {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* ТАКЛИЧКИ ЗАДАЧ */
+/* #region ТАКЛИЧКИ ЗАДАЧ */
+.tabs {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  justify-content: center;
+}
+
+.tab-btn {
+  background: white;
+  color: #F24781;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.tab-btn:hover {
+  opacity: 0.8;
+}
+
+.tab-btn.active {
+  background: #F24781;
+  color: white;
+}
+/* #endregion */
+/* КОД ПРИГЛАШЕНИЯ */
+.code-box {
+  background: white;
+  color: #182846;
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  font-family: monospace;
+  letter-spacing: 2px;
+}
+
+/* НОВАЯ ЗАДАЧА */
+.new-task-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.new-task-modal {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.new-task-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.new-task-title {
+  color: #F24781;
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.modal-close {
+  background: none;
+  border: 2px solid #F24781;
+  border-radius: 50%;
+  color: #F24781;
+  font-size: 28px;
+  cursor: pointer;
+  transition: 0.2s;
+  padding: 8px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: #F24781;
+  color: white;
+  transform: scale(1.05);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #F24781;
+  font-size: 32px;
+  cursor: pointer;
+  transition: 0.2s;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  transform: scale(1.2);
+}
+
+.task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.form-group-box {
+  background: #F24781;
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.label-box {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+/* ТЕКСТОВОЕ ПОЛЕ ДЛЯ ТЕКСТА ЗАДАЧИ */
+.textarea-box {
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  font-family: Roboto, Arial;
+  min-height: 120px;
+  resize: vertical;
+  background: white;
+  color: #182846;
+}
+
+.textarea-box::placeholder {
+  color: #ccc;
+}
+
+/* СЕЛЕКТ ДЛЯ ИСПОЛНИТЕЛЯ */
+.select-box {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  font-family: Roboto, Arial;
+  background: white;
+  color: #182846;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+  padding-right: 40px;
+}
+
+.select-box:focus {
+  background-color: #f9f9f9;
+}
+
+/* КАСТОМНЫЙ СЕЛЕКТ */
+.custom-select {
+  position: relative;
+  width: 100%;
+}
+
+.select-box {
+  width: 100%;
+  padding: 12px 15px;
+  padding-left: 45px;
+  padding-right: 40px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  font-family: Roboto, Arial;
+  background: white;
+  color: #182846;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: 0.2s;
+}
+
+.select-box:hover {
+  background-color: #f9f9f9;
+}
+
+.select-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 15px;
+  font-size: 12px;
+  color: #182846;
+}
+
+.select-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 2px solid #F24781;
+  border-radius: 10px;
+  margin-top: 5px;
+  z-index: 100;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.select-option {
+  padding: 12px 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #182846;
+  transition: 0.2s;
+}
+
+.select-option:hover {
+  background: #f0f0f0;
+}
+
+.select-option:first-child {
+  border-radius: 8px 8px 0 0;
+}
+
+.select-option:last-child {
+  border-radius: 0 0 8px 8px;
+}
+
+.select-icon-small {
+  width: 18px;
+  height: 18px;
+}
+
+/* ИНПУТ ДЛЯ СРОКА */
+.input-box {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  font-family: Roboto, Arial;
+  background: white;
+  color: #182846;
+  text-align: center;
+}
+
+.input-box::placeholder {
+  color: #ccc;
+}
+
+.input-box::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+.counter-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  font-family: Roboto, Arial;
+}
+
+#char-counter {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+}
+
+/* КНОПКА СОЗДАТЬ */
+.create-task-btn {
+  background: #F24781;
+  color: white;
+  border: none;
+  padding: 15px 50px;
+  border-radius: 15px;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: 0.2s;
+  align-self: center;
+}
+
+.create-task-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+/* РАЗДЕЛЫ ЗАДАЧ */
+.tasks-section {
+  width: 100%;
+}
+
+/* ТАБЛИЦА ЧЛЕНОВ СЕМЬИ */
+.members-table {
+  width: 100%;
+  background: #F24781;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.members-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.member-badge {
+  background: white;
+  color: #182846;
+  padding: 12px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  word-break: break-word;
+}
+
+/* ПРОФИЛЬ */
+/* ИКОНКА В ПРОФИЛЕ HEADER */
+.profile-header-icon {
+  width: 36px;
+  height: 36px;
+  background: #F24781;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+}
+
+/* ПРОФИЛЬ СТРАНИЦА */
+.profile-content {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.profile-photo-section {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.profile-photo-placeholder {
+  width: 120px;
+  height: 120px;
+  background: transparent;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.profile-photo-placeholder svg {
+  width: 100px;
+  height: 100px;
+}
+
+.profile-name {
+  color: white;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.members-section {
+  width: 100%;
+}
+
+
+/* ЧЛЕНОВ СЕМЬИ */
+.members-table {
+  width: 100%;
+  background: #F24781;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.members-title {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 15px 0;
+  padding: 0;
+}
+
+.members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.member-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 3px solid rgba(255, 255, 255);
+}
+
+.member-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.members-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.member-badge {
+  background: white;
+  color: #182846;
+  padding: 10px 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  word-break: break-word;
+  line-height: 1.2;
+}
+
+ul,li {
+  list-style: none;
+}
+
+/* НАСТРОЙКИ */
+.settings-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.settings-header-icon {
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: 2px solid #F24781;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #F24781;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-start;
+  margin-bottom: 40px;
+  color: #F24781;
+}
+
+.settings-icon {
+  font-size: 32px;
+  color: #F24781;
+}
+
+.settings-title {
+  color: #F24781;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.settings-fields {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 60px;
+}
+
+.settings-input {
+  background: #182846;
+  border: 2px solid white;
+  border-radius: 10px;
+  padding: 15px 20px;
+  color: white;
+  font-size: 16px;
+  font-family: Roboto, Arial;
+  text-align: left;
+  transition: 0.2s;
+}
+
+.settings-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.settings-input:focus {
+  outline: none;
+  border-color: #F24781;
+  box-shadow: 0 0 10px rgba(242, 71, 129, 0.2);
+}
+
+.settings-input:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+/* ПОЛЯ НАСТРОЕК С ИНФОРМАЦИЕЙ */
+.settings-field {
+  background: #182846;
+  border: 2px solid white;
+  border-radius: 10px;
+  padding: 15px 20px;
+  color: white;
+  font-size: 16px;
+  font-family: Roboto, Arial;
+  text-align: left;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settings-field-label {
+  font-weight: 500;
+  color: white;
+}
+
+.settings-field-value {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.settings-toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.settings-toggle-btn:hover {
+  transform: scale(1.1);
+}
+
+.settings-toggle-btn img {
+  width: 100%;
+  height: 100%;
+}
+
+.settings-field::placeholder {
+  color: #999;
+}
+
+.settings-btn {
+  background: #182846;
+  border: 2px solid white;
+  border-radius: 10px;
+  padding: 15px 20px;
+  color: white;
+  font-size: 16px;
+  font-family: Roboto, Arial;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.settings-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #F24781;
+}
+
+.settings-btn:active {
+  transform: scale(0.98);
+}
+
+.logout-btn {
+  background: #F24781;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.logout-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+/* ПОДВАЛ/НАВИГАЦИЯ */
+.footer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 2px solid #F24781;
+  margin-top: 40px;
+  margin-left: -32px;
+  margin-right: -32px;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+.nav-icon {
+  color: #F24781;
+  font-size: 28px;
+  cursor: pointer;
+  transition: 0.2s;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-icon:hover {
+  opacity: 0.8;
+  transform: scale(1.1);
+}
+
+/* МОДАЛЬНОЕ ОКНО */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: #182846;
+  border-radius: 15px;
+  padding: 40px;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  border: 2px solid #F24781;
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #F24781;
+  font-size: 28px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.modal-close:hover {
+  transform: scale(1.2);
+}
+
+.modal-title {
+  color: #F24781;
+  font-size: 22px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* КНОПКА ДОБАВИТЬ ЗАДАЧУ */
+.add-task-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #F24781;
+  background: none;
+  border: 2px solid #F24781;
+  border-radius: 10px;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 20px auto;
+  transition: 0.2s;
+  font-weight: 500;
+}
+
+.add-task-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.add-task-btn:hover {
+  background: #F24781;
+  color: white;
+}
+
+.add-task-btn:hover img {
+  filter: invert(1);
+}
+
+/* КНОПКА ВЫХОДА */
+.logout-btn {
+  background: #F24781;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 30px;
+  width: 100%;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.logout-btn:hover {
+  opacity: 0.9;
+}
+
+/* АДАПТИВНОСТЬ */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .header {
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .footer {
+    margin-left: -16px;
+    margin-right: -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .card-title {
+    font-size: 20px;
+  }
+
+  .members-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .footer {
+    padding: 15px 0;
+  }
+
+  .nav-icon {
+    font-size: 24px;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profile-info {
+    text-align: center;
+  }
+}
