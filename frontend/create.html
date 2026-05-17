@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Создание семьи</title>
+  <link rel="stylesheet" href="newdn.css">
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+</head>
+<body>
+  <div class="container">
+    
+    <header class="header">
+      <div class="logo">
+        <img src="img/vk_circled.svg" alt="вк">
+        <div class="title">СЕМЕЙНЫЙ МЕНЕДЖЕР</div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="card">
+        <p class="card-title">Введите имя вашей семьи:</p>
+
+        <input type="text" id="family-name-input" class="input" placeholder="Например: Ивановы" maxlength="45">
+        <button id="create-family-btn" class="action-btn next-btn" ><span class="chs-btn">Далее</span><img src="img/next_page.svg" alt="далее"></button>
+        <p id="create-error" style="color: white; margin-top: 15px; font-size: 14px; min-height: 20px;"></p>
+      </div>
+    </main>
+
+  </div>
+  <script src="script/create.js"></script>
+</body>
+</html>

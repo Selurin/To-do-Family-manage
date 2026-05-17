@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новая задача</title>
+    <link rel="stylesheet" href="newdn.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <div class="vk-icon">vk</div>
+                <h1 class="title">СЕМЕЙНЫЙ МЕНЕДЖЕР</h1>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="new-task-container">
+                <div class="new-task-header">
+                    <h2 class="new-task-title">НОВАЯ ЗАДАЧА</h2>
+                    <button class="close-btn" onclick="window.location.href='tasks.html'">✕</button>
+                </div>
+
+                <div class="task-form">
+                    <div class="form-group-box">
+                        <label class="label-box">Текст задачи:</label>
+                        <textarea id="task-title" class="textarea-box" placeholder="Что нужно сделать?"  maxlength="255"></textarea>
+                      
+                        <!-- Счётчик символов -->
+                        <div id="char-counter" class="char-counter">
+                            <span id="chars-left"></span> / 255
+                            <!-- Здесь будет выводиться предупреждение-->
+                            <p id="task-warning"></p> 
+                        </div>
+                      </div>
+
+                    <div class="form-group-box">
+                        <label class="label-box">Исполнитель:</label>
+                        <select id="executor-select" class="select-box">
+                            <!-- <option value="0">Не назначено</option> -->
+                            <option value="me">Я (автор)</option>
+                            <!-- Остальные члены семьи будут добавлены динамически -->
+                        </select>
+                    </div>
+
+                    <div class="form-group-box">
+                        <label class="label-box">Срок (необязательно):</label>
+                        <input type="date" id="task-deadline" class="input-box">
+                    </div>
+
+                    <button id="create-btn" class="create-task-btn" disabled>Создать</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script/new_tasks.js"></script>
+    <script src="script/counter.js"></script>
+</body>
+</html>
