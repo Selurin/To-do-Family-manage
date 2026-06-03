@@ -1,161 +1,103 @@
 import os
 import time
 import threading
+import vk_api
 import psycopg2
-from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
-from vk_api import VkApi
-from dotenv import load_dotenv
+from psycopg2.extras import RealDictCursor
 
-load_dotenv()
-
+# 1. Загружаем переменные окружения из панели Amvera
 TOKEN = os.getenv('VK_TOKEN')
-GROUP_ID = int(os.getenv('VK_GROUP_ID'))
+DB_DSN = os.getenv('DB_DSN')  # Убедись, что в настройках Amvera бота есть переменная DB_DSN с адресом твоей БД
 
-# Строка подключения к БД (из вашего config.py)
-DB_DSN = os.getenv(
-    "DB_DSN",
-    "postgres://postgres:1z9x8c7v@localhost:5432/family_manager"
-)
+if not TOKEN or not DB_DSN:
+    raise ValueError("❌ Критические переменные окружения (VK_TOKEN или DB_DSN) не найдены!")
 
-# Инициализация ВК
-vk_session = VkApi(token=TOKEN)
+# 2. Инициализация ВК сессии
+vk_session = vk_api.VkApi(token=TOKEN)
 vk = vk_session.get_api()
-longpoll = VkBotLongPoll(vk_session, GROUP_ID)
-
-# Множество для хранения ID уже отправленных задач
-sent_tasks = set()
-
-def check_new_tasks():
-    """Проверяет новые задачи и отправляет уведомления"""
-    global sent_tasks
-    print("🔍 Проверка БД...")
-
-    try:
-        conn = psycopg2.connect(DB_DSN)
-        cursor = conn.cursor()
-
-        # Получаем задачи с JOIN на users для назначенного и для создателя
-        cursor.execute("""
-            SELECT 
-                t.id, 
-                t.title, 
-                t.description, 
-                t.deadline,
-                assigned_user.vk_id as assigned_vk_id,
-                creator_user.name as creator_name
-            FROM tasks t
-            JOIN users assigned_user ON t.assigned_to = assigned_user.id
-            JOIN users creator_user ON t.creator_id = creator_user.id
-            WHERE t.notification_sent = FALSE
-            ORDER BY t.id ASC
-        """)
-
-        tasks = cursor.fetchall()
-        print(f"📊 Найдено неотправленных задач: {len(tasks)}")
-
-        for task in tasks:
-            task_id = task[0]
-            title = task[1]
-            description = task[2]
-            deadline = task[3]
-            vk_user_id = task[4]  # ← VK ID назначенного
-            creator_name = task[5]  # ← Имя создателя!
-
-            # Пропускаем уже обработанные
-            if task_id in sent_tasks:
-                continue
-
-            # Формируем сообщение (теперь с именем создателя)
-            message = f"📋 Новая задача!\n\n"
-            message += f"{title}\n\n"
-            if description:
-                message += f"{description}\n\n"
-            if deadline:
-                message += f"⏰ Дедлайн: {deadline.strftime('%d.%m.%Y %H:%M')}\n"
-            message += f"\n👤 Создатель: {creator_name}"  # ← теперь имя, а не ID
-
-            # Отправляем уведомление
-            try:
-                vk.messages.send(
-                    peer_id=vk_user_id,
-                    message=message,
-                    random_id=0
-                )
-                print(
-                    f"✅ Уведомление отправлено пользователю {vk_user_id} о задаче #{task_id}: {title} (создатель: {creator_name})")
-
-                # Помечаем как отправленное
-                cursor.execute(
-                    "UPDATE tasks SET notification_sent = TRUE WHERE id = %s",
-                    (task_id,)
-                )
-                conn.commit()
-
-                sent_tasks.add(task_id)
-
-            except Exception as e:
-                print(f"❌ Ошибка отправки задачи #{task_id}: {e}")
-
-        cursor.close()
-        conn.close()
-
-    except psycopg2.Error as e:
-        print(f"❌ Ошибка БД: {e}")
 
 
-def monitor_tasks():
-    """Фоновый мониторинг таблицы tasks"""
-    print("🔄 Мониторинг задач запущен (проверка каждые 5 секунд)")
+def check_database_for_new_tasks():
+    """Фоновая функция, которая мониторит появление новых задач в БД"""
+    print("🚀 Фоновый мониторинг базы данных успешно запущен...")
+
     while True:
-        check_new_tasks()
+        conn = None
+        try:
+            # Подключаемся к PostgreSQL (используем RealDictCursor, чтобы обращаться к полям по именам)
+            conn = psycopg2.connect(DB_DSN, cursor_factory=RealDictCursor)
+            cur = conn.cursor()
+
+            # Связываем таблицу задач с таблицей пользователей, чтобы узнать vk_id исполнителя (assigned_to)
+            # Также берем имя создателя задачи (creator_id)
+            cur.execute("""
+                SELECT 
+                    t.id AS task_id, 
+                    t.title AS task_title, 
+                    u.vk_id AS executor_vk_id, 
+                    c.name AS creator_name
+                FROM tasks t
+                JOIN users u ON t.assigned_to = u.id
+                LEFT JOIN users c ON t.creator_id = c.id
+                WHERE t.is_notified = FALSE AND t.status = 'new';
+            """)
+
+            new_tasks = cur.fetchall()
+
+            for task in new_tasks:
+                t_id = task['task_id']
+                title = task['task_title']
+                vk_id = task['executor_vk_id']
+                creator = task['creator_name'] or "Участник семьи"
+
+                try:
+                    # Отправляем сообщение исполнителю в ВК
+                    message_text = (
+                        f"🔔 **Новая задача для тебя!**\n\n"
+                        f"📌 **Что сделать:** {title}\n"
+                        f"👤 **Поручил:** {creator}\n\n"
+                        f"Удачи в выполнении! 💪"
+                    )
+
+                    vk.messages.send(
+                        user_id=vk_id,
+                        message=message_text,
+                        random_id=0
+                    )
+                    print(f"✅ Уведомление по задаче №{t_id} успешно отправлено пользователю VK ID: {vk_id}")
+
+                    # Замечаем в БД, что уведомление успешно ушло
+                    cur.execute("UPDATE tasks SET is_notified = TRUE WHERE id = %s;", (t_id,))
+                    conn.commit()
+
+                except vk_api.exceptions.ApiError as vk_err:
+                    print(f"❌ Не удалось отправить сообщение в ВК для {vk_id}. Ошибка: {vk_err}")
+                    # Если пользователь заблокировал бота или не написал ему первым,
+                    # всё равно ставим TRUE, чтобы бот не зацикливался на этой задаче
+                    cur.execute("UPDATE tasks SET is_notified = TRUE WHERE id = %s;", (t_id,))
+                    conn.commit()
+
+            cur.close()
+
+        except Exception as e:
+            print(f"❌ Ошибка в цикле проверки БД: {e}")
+
+        finally:
+            if conn:
+                conn.close()
+
+        # Спим 5 секунд перед следующей проверкой базы данных
         time.sleep(5)
 
 
-def main():
-    print("=" * 50)
-    print("✅ Бот-монитор задач ВК запущен!")
-    print(f"📁 Отслеживается таблица: tasks")
-    print(f"👥 Группа ВК ID: {GROUP_ID}")
-    print("=" * 50)
-
-    # Запускаем мониторинг в фоновом потоке
-    monitor_thread = threading.Thread(target=monitor_tasks, daemon=True)
+if __name__ == "__main__":
+    # Запускаем проверку базы данных в отдельном независимом потоке
+    monitor_thread = threading.Thread(target=check_database_for_new_tasks, daemon=True)
     monitor_thread.start()
 
-    # Основной цикл для команд
-    for event in longpoll.listen():
-        if event.type == VkBotEventType.MESSAGE_NEW:
-            message = event.object.message
-            text = message['text'].lower()
-            user_id = message['from_id']
+    print("🤖 Бот-уведомитель успешно инициализирован и работает.")
 
-            # Обработка кнопки "Начать"
-            if text == 'начать':
-                vk.messages.send(
-                    peer_id=user_id,
-                    message="👋 Привет! Я бот семьи.\n\n"
-                            "📌 Я буду уведомлять вас о новых задачах.\n"
-                            "💡 Команды: /status и /help",
-                    random_id=0
-                )
-
-            if text == '/status':
-                vk.messages.send(
-                    peer_id=user_id,
-                    message="🤖 Бот работает и отслеживает новые задачи.\n\n"
-                            "Новые задачи приходят автоматически при создании.",
-                    random_id=0
-                )
-            elif text == '/help':
-                vk.messages.send(
-                    peer_id=user_id,
-                    message="🤖 Доступные команды:\n\n"
-                            "/status - статус бота\n"
-                            "/help - это сообщение\n\n"
-                            "📌 Бот автоматически уведомляет о новых задачах",
-                    random_id=0
-                )
-
-
-if __name__ == '__main__':
-    main()
+    # Здесь можно оставить стандартный LongPoll, если бот должен отвечать на текстовые сообщения в будущем.
+    # Сейчас просто удерживаем главный поток приложения, чтобы контейнер не завершал работу:
+    while True:
+        time.sleep(1)

@@ -3,8 +3,7 @@
 console.log("Файл profile.js загружен!");
 
 // Определяем API_URL для profile.js
-const API_URL = window.API_URL || 'http://localhost:8000';
-
+const API_URL = window.API_URL || 'https://todo-stasnau.amvera.io';
 
 // Перевод роли на русский + иконка
 function getRoleBadge(role) {
@@ -109,7 +108,7 @@ async function loadFamilyMembers() {
 }
 
 // ===== Инициализация =====
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // Отображение имени текущего пользователя
     const profileUserName = document.getElementById('profile-user-name');
     if (profileUserName) {
@@ -117,6 +116,32 @@ document.addEventListener('DOMContentLoaded', () => {
         profileUserName.textContent = 'Вы: ' + userName;
     }
     
+    // Железобетонная загрузка данных семьи через сервер 
+    const vkId = localStorage.getItem('vk_id');
+    const codeDisplay = document.getElementById('profile-code-display'); 
+
+    if (vkId) {
+        try {
+            const res = await fetch(`${API_URL}/user/load_user_family?vk_id=${vkId}`);
+            const data = await res.json();
+            
+            if (data.status === 'family_found') {
+                if (codeDisplay) {
+                    codeDisplay.textContent = data.invite_code || data.code || 'Не найден';
+                }
+                
+                // Обновляем кэш для функции loadFamilyMembers()
+                localStorage.setItem('family_id', data.family_id);
+                localStorage.setItem('invite_code', data.invite_code || data.code);
+            } else {
+                if (codeDisplay) codeDisplay.textContent = 'Семья не найдена';
+            }
+        } catch (e) {
+            console.error('Ошибка при синхронизации семьи с сервером:', e);
+            if (codeDisplay) codeDisplay.textContent = 'Ошибка сети';
+        }
+    }
+
     // Загрузка списка участников
     loadFamilyMembers();
 });

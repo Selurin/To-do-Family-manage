@@ -1,11 +1,9 @@
 from fastapi import APIRouter, HTTPException
-
-from ..database import db
+from database import db
 import random
 import string
 
 router = APIRouter(prefix="/family", tags=["family"])
-
 
 async def code_generator():
     chars = string.ascii_letters + string.digits
@@ -15,20 +13,22 @@ async def code_generator():
         if not existing:
             return code
 
+# УДАЛЕНА ФУНКЦИЯ get_or_create_user - она была источником багов!
 
 # создание семьи
 @router.post("/create")
-async def create_family(name: str, user_id: int):
-    #ограничение на длину имени
+async def create_family(name: str, user_id: int): # user_id - строго ВНУТРЕННИЙ ID
+    # ограничение на длину имени
     if len(name) > 45:
         return {"error": "name too long"}
 
     invite_code = await code_generator()
-
     await db.create_family(name, invite_code)
+    
     family = await db.get_family_by_code(invite_code)
     family_id = family['id']
 
+    # Добавляем пользователя в семью по его внутреннему ID
     await db.add_member(user_id, family_id, 'owner')
 
     return {
@@ -38,21 +38,16 @@ async def create_family(name: str, user_id: int):
         "name": family['name'],
     }
 
-
 # присоединение к семье по коду
 @router.post("/join")
-async def join_family(invite_code: str, user_id: int):
+async def join_family(invite_code: str, user_id: int): # user_id - строго ВНУТРЕННИЙ ID
     family = await db.get_family_by_invite_code(invite_code)
     if family:
         user = await db.check_membership_by_user_id(user_id)
         if user and user['family_id'] == family['id']:
-            return {
-                "status": "ERR: user is already in this family",
-            }
+            return {"status": "ERR: user is already in this family"}
         elif user and user['family_id'] != family['id']:
-            return {
-                "status": "ERR: user is in another family",
-            }
+            return {"status": "ERR: user is in another family"}
         else:
             await db.add_member(user_id, family['id'], 'child')
             return {
@@ -61,20 +56,16 @@ async def join_family(invite_code: str, user_id: int):
                 "invite_code": family['invite_code'],
             }
     else:
-        return {
-            "status": "ERR: wrong invite code",
-        }
-
+        return {"status": "ERR: wrong invite code"}
 
 # выход из семьи
 @router.post("/leave")
-async def leave_family(user_id: int):
+async def leave_family(user_id: int): # user_id - строго ВНУТРЕННИЙ ID
     await db.delete_member(user_id)
     return {
         "status": "member deleted",
         "user_id": user_id,
     }
-
 
 # получение данных семьи по коду
 @router.get("/get-by-code")
@@ -87,4 +78,17 @@ async def get_family_by_code(invite_code: str):
             "invite_code": family['invite_code']
         }
     raise HTTPException(status_code=404, detail="Family not found")
-#поменять роль
+
+# поменять роль
+@router.post("/change-role")
+async def change_role(user_id: int, new_role: str): # user_id - строго ВНУТРЕННИЙ ID
+    if new_role not in ['owner', 'parent', 'child']:
+        return {"status": "ERR: invalid role. Must be 'owner', 'parent', or 'child'"}
+    
+    await db.change_user_role(user_id, new_role)
+    
+    return {
+        "status": "role changed",
+        "user_id": user_id, 
+        "new_role": new_role
+    }

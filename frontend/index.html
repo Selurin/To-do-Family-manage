@@ -16,15 +16,13 @@
         </header>
 
         <main class="main" style="flex-direction: column; gap: 30px;">
-            <!-- Основная кнопка (пока ведет сразу, позже тут будет VK Bridge) -->
-            <button onclick="alert('В разработке')" class="vk-button">ВОЙТИ ЧЕРЕЗ VK</button> <!-- Убрать заглушку alert позже -->
+            <button id="vk-login" class="vk-button">ВОЙТИ ЧЕРЕЗ VK</button>
             
-            <!-- Временная панель разработчика -->
             <div style="width: 100%; max-width: 350px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; text-align: center;">
                 <h3 style="color: #F24781; margin-bottom: 15px; font-size: 16px;">Dev Mode: Ручной вход</h3>
                 
                 <form id="dev-form" style="display: flex; flex-direction: column; gap: 10px;">
-                    <input type="number" id="dev-password" class="input" placeholder="Пароль доступа" required>
+                    <input type="text" id="dev-password" class="input" placeholder="Пароль доступа" required>
                     <input type="number" id="dev-vk-id" class="input" placeholder="VK ID (например, 123)" required>
                     <input type="text" id="dev-name" class="input" placeholder="Имя пользователя" required>
                     
@@ -38,6 +36,8 @@
         </main>
     </div>
 
-    <script src="script/index.js"></script>
+    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+    
+    <script src="index.js?v=6" defer></script>
 </body>
 </html>

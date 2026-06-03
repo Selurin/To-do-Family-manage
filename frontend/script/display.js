@@ -2,6 +2,7 @@
 
 console.log(" Файл display.js загружен");
 
+const API_URL = 'https://todo-stasnau.amvera.io';
 
 
 // Безопасное обновление текста элемента

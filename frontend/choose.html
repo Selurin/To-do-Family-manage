@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
   <meta charset="UTF-8">
   <title>Выбор</title>
   <link rel="stylesheet" href="newdn.css">
@@ -19,20 +20,23 @@
     <main class="main">
       <div class="card">
         <p class="card-title">У вас ещё нет семейной группы?</p>
+        
+        <p id="status-msg" style="text-align: center; color: #fff; margin-bottom: 15px;"></p>
 
-        <button id="btn-create" onclick="window.location.href='create.html'" class="action-btn next-btn"> 
+        <button id="btn-create" class="action-btn next-btn"> 
           <img src="img/plus_math.svg" alt="плюс">
           <span >Создать семью</span>
         </button>
 
-        <button id="btn-create" onclick="window.location.href='join.html'" class="action-btn next-btn"> 
+        <button id="btn-join" class="action-btn next-btn"> 
           <img src="img/search.svg" alt="поиск">
           <span >Войти по коду</span>
         </button>
 
-
       </div>
     </main>
   </div>
+
+  <script src="choose.js?v=2001"></script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 import asyncpg
-from .config import DB_DSN
+from config import DB_DSN
+
 class Database:
     def __init__(self, dsn):
         self.dsn = dsn
@@ -26,6 +27,24 @@ class Database:
         async with self.pool.acquire() as conn:
             return await conn.fetchrow(query, vk_id)
 
+    async def ensure_user_exists(self, user_id: int):
+        """
+        Автоматически создает запись пользователя, если её еще нет в таблице users.
+        Если пользователь уже существует, благодаря ON CONFLICT запрос ничего не ломает.
+        """
+        query = """
+        INSERT INTO users (id, vk_id, name)
+        VALUES ($1, $2, $3)
+        ON CONFLICT (id) DO NOTHING;
+        """
+        async with self.pool.acquire() as conn:
+            await conn.execute(query, user_id, user_id, f"Пользователь {user_id}")
+            
+    async def update_user_name(self, vk_id: int, new_name: str):
+        query = "UPDATE users SET name = $1 WHERE vk_id = $2;"
+        async with self.pool.acquire() as conn:
+            await conn.execute(query, new_name, vk_id)
+
     # ============================
     # Семьи
     # ============================
@@ -43,6 +62,17 @@ class Database:
         query = "SELECT * FROM families WHERE invite_code = $1;"
         async with self.pool.acquire() as conn:
             return await conn.fetchrow(query, invite_code)
+            
+    async def get_family_by_id(self, family_id: int):
+        query = "SELECT * FROM families WHERE id = $1;"
+        async with self.pool.acquire() as conn:
+            return await conn.fetchrow(query, family_id)
+            
+    # 🔥 ИСПРАВЛЕНИЕ: Новый метод для получения семьи по её ID
+    async def get_family_by_id(self, family_id: int):
+        query = "SELECT * FROM families WHERE id = $1;"
+        async with self.pool.acquire() as conn:
+            return await conn.fetchrow(query, family_id)
 
     # ============================
     # Участники семьи
@@ -80,6 +110,18 @@ class Database:
         """
         async with self.pool.acquire() as conn:
             await conn.execute(query, user_id)
+
+    async def change_user_role(self, user_id: int, new_role: str):
+        """
+        Обновляет роль участника внутри семьи.
+        """
+        query = """
+        UPDATE family_members 
+        SET role = $1 
+        WHERE user_id = $2;
+        """
+        async with self.pool.acquire() as conn:
+            await conn.execute(query, new_role, user_id)
 
     # ============================
     # Задачи
@@ -133,10 +175,8 @@ class Database:
         async with self.pool.acquire() as conn:
             await conn.execute(query, task_id)
 
-
     async def get_family_by_invite_code(self, invite_code: str):
         return await self.get_family_by_code(invite_code)
-    
     
     async def close(self):
         if self.pool:

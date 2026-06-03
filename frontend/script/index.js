@@ -1,107 +1,61 @@
-const API_URL = 'http://localhost:8000';
+vkMainBtn.addEventListener('click', async () => {
+    console.log("Клик по кнопке ВК зафиксирован. Запрашиваем VKWebAppGetUserInfo...");
+    try {
+        // 1. Получаем данные пользователя из ВК
+        const vkData = await vkBridge.send('VKWebAppGetUserInfo');
+        console.log('Данные от ВК получены успешно:', vkData);
 
-    // Хелпер для безопасного чтения данных (учитывает пробелы в ключах бэкенда если есть)
-    function getField(obj, key) {
-        return obj[key] || obj[key + ' '] || obj[' ' + key];
-    }
+        // САМОЕ ВАЖНОЕ: Сохраняем ID моментально, до любых запросов на бэкенд!
+        localStorage.setItem('vk_id', vkData.id);
+        localStorage.setItem('vk_user_id', vkData.id);
+        localStorage.setItem('user_id', vkData.id);
+        localStorage.setItem('user_name', `${vkData.first_name} ${vkData.last_name}`.trim());
 
-    document.getElementById('dev-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const vkIdInput = document.getElementById('dev-vk-id');
-        const nameInput = document.getElementById('dev-name');
-        const passwordInput = document.getElementById('dev-password');
-        const errorDiv = document.getElementById('dev-error');
-        const btn = document.getElementById('dev-login-btn');
-        
-        const vkId = vkIdInput.value.trim();
-        const name = nameInput.value.trim();
-        const password = passwordInput.value.trim();
+        // 2. Отправляем запрос на бэкенд (оставляем как у тебя)
+        console.log('Отправляем запрос на бэкенд:', `${API_URL}/check-password`);
+        const response = await fetch(`${API_URL}/check-password`, { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                vk_id: vkData.id,
+                first_name: vkData.first_name,
+                last_name: vkData.last_name,
+                photo: vkData.photo_200,
+                launch_params: window.location.search 
+            })
+        });
 
-        errorDiv.textContent = '';
+        // 3. Регистрируем пользователя в БД
+        console.log('Регистрируем пользователя на бэкенде...');
+        const fullName = `${vkData.first_name} ${vkData.last_name}`.trim();
+        const regRes = await fetch(`${API_URL}/user/register?vk_id=${vkData.id}&name=${encodeURIComponent(fullName)}`, { 
+            method: 'POST' 
+        });
+        const regData = await regRes.json();
+        console.log('Ответ от бэкенда user/register:', regData);
 
-        if (!vkId || !name) {
-            errorDiv.textContent = 'Заполните VK ID и имя!';
-            return;
-        }
-
-        btn.disabled = true;
-        btn.textContent = 'Проверка...';
-
+        // 4. Проверяем, состоит ли пользователь в семье
         try {
-            const passRes = await fetch(`${API_URL}/check-password`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password })
-            });
-            const passData = await passRes.json();
-            
-            if (!passData.valid) {
-                errorDiv.textContent = 'Неправильный пароль';
-                btn.disabled = false;
-                btn.textContent = 'Зарегистрировать и войти';
-                return;
-            }
-        } catch (e) {
-            errorDiv.textContent = 'Нет связи с сервером!';
-            console.error(e);
-            btn.disabled = false;
-            btn.textContent = 'Зарегистрировать и войти';
-            return;
-        }
+            const famRes = await fetch(`${API_URL}/user/load_user_family?vk_id=${vkData.id}`);
+            const famData = await famRes.json();
+            const famStatus = getField(famData, 'status')?.trim();
 
-        btn.disabled = true;
-        btn.textContent = 'Регистрация...';
-
-        try {
-            const res = await fetch(`${API_URL}/user/register?vk_id=${vkId}&name=${encodeURIComponent(name)}`, { 
-                method: 'POST' 
-            });
-            const data = await res.json();
-
-            // Читаем статус
-            const status = getField(data, 'status')?.trim();
-            
-            if (status === 'already_exist' || status === 'user_created') {
-                // Читаем данные
-                const userId = getField(data, 'id');
-                const userVk = getField(data, 'vk_id');
-                const userName = getField(data, 'name');
-
-                // Сохраняем в LocalStorage
-                localStorage.setItem('user_id', userId);
-                localStorage.setItem('vk_id', userVk);
-                localStorage.setItem('user_name', userName);
-                
-                // 🔹 НОВОЕ: Проверяем, есть ли уже семья
-                try {
-                    const famRes = await fetch(`${API_URL}/user/load_user_family?vk_id=${userVk}`);
-                    const famData = await famRes.json();
-                    const famStatus = getField(famData, 'status')?.trim();
-
-                    if (famStatus === 'family_found') {
-                        //  Уже в семье -> сохраняем family_id и идём сразу в задачи
-                        const familyId = getField(famData, 'family_id');
-                        localStorage.setItem('family_id', familyId);
-                        window.location.href = 'tasks.html';
-                    } else {
-                        // Семьи нет -> идём на choose.html (как было)
-                        window.location.href = 'choose.html';
-                    }
-                } catch (famErr) {
-                    // Если проверка семьи упала — всё равно идём на choose.html
-                    console.warn('Не удалось проверить семью, переход на choose.html', famErr);
-                    window.location.href = 'choose.html';
-                }
-                
+            if (famStatus === 'family_found') {
+                const familyId = getField(famData, 'family_id');
+                localStorage.setItem('family_id', familyId);
+                console.log('Семья найдена. Перенаправление на tasks.html');
+                window.location.href = 'tasks.html';
             } else {
-                errorDiv.textContent = 'Ошибка: ' + status;
+                console.log('Семья не найдена. Перенаправление на choose.html');
+                window.location.href = 'choose.html';
             }
-        } catch (e) {
-            errorDiv.textContent = 'Нет связи с сервером!';
-            console.error(e);
-        } finally {
-            btn.disabled = false;
-            btn.textContent = 'Зарегистрировать и войти';
+        } catch (famErr) {
+            console.warn('Не удалось проверить семью, переход на choose.html', famErr);
+            window.location.href = 'choose.html';
         }
-    });
+
+    } catch (error) {
+        console.error('Ошибка в процессе авторизации VK Bridge:', error);
+        alert('Вход через ВК был отменен или произошел сбой.');
+    }
+});
