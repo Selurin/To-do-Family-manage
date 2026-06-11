@@ -24,9 +24,14 @@
 
 ## 🖼️ Возможности интерфейса
 
-| Экран авторизации | Список задач | Уведомление от бота |
-|:---:|:---:|:---:|
-| *[Скриншот 1]* | *[Скриншот 2]* | *[Скриншот 3]* |
+### Экран авторизации
+<img width="579" height="445" alt="image" src="https://github.com/user-attachments/assets/6e8bd527-775e-4eaf-868c-ab634ccc4cd3" /> 
+
+### Список задач
+<img width="569" height="431" alt="image" src="https://github.com/user-attachments/assets/6b9bfb8a-fcdf-40ab-9763-38585de1b21c" />
+
+ ### Уведомление от бота
+ <img width="258" height="151" alt="image" src="https://github.com/user-attachments/assets/29f430fa-df59-4cd8-8151-0cced0888bb2" />
 
 ---
 
@@ -35,7 +40,7 @@
 | Направление | Технологии |
 | :--- | :--- |
 | **Backend** | ![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python) ![FastAPI/Uvicorn](https://img.shields.io/badge/Uvicorn-ASGI-teal) |
-| **Frontend** | ![Node.js](https://img.shields.io/badge/Node.js-18+-green?logo=node.js) ![HTML/CSS/JS](https://img.shields.io/badge/JS-VK_MiniApps-orange) |
+| **Frontend** | ![Node.js](https://img.shields.io/badge/Node.js-18+-green?logo=node.js) ![HTML/CSS/JS](https://img.shields.io/badge/HTML/CSS/JS-orange) |
 | **Database** | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-336791?logo=postgresql) |
 | **Integrations**| ![VK API](https://img.shields.io/badge/VK_API-Mini_Apps_&_Bot-0077FF?logo=vk) |
 | **Tools** | Git, pgAdmin 4, dotenv, npm |
